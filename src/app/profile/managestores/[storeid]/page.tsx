@@ -2,14 +2,15 @@
 import axios from "axios";
 import { Key, useEffect, useState } from "react";
 import { useRouter } from 'next/navigation'
-
+import MiniProduct from '@/components/MiniProduct'
+import Product from '@/components/Product'
 
 export default function StorePage({ params }: { params: { storeid: Key } }) {
 
     const router = useRouter();
     const [store,setStore]:any = useState(null);
     const [productdetails,setProductdetails] = useState({storeid:params.storeid,name:'',description:'',price:0,imageurl:'',category:''})
-    
+  const [activeProduct,setActiveProduct] = useState(null)
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
     // -------------------------------UPLOAD FUNCTIONS FOR CLOUDINARY----------------------------------------------
@@ -86,6 +87,14 @@ export default function StorePage({ params }: { params: { storeid: Key } }) {
       }
     }
 
+    const ActivateProduct = (id:any)=>{
+      if (activeProduct == id){
+          setActiveProduct(null)
+      }else{
+          setActiveProduct(id)
+      }
+  }
+
     useEffect(()=>{
       GetStoreInfo()
     },[])
@@ -106,9 +115,17 @@ export default function StorePage({ params }: { params: { storeid: Key } }) {
               <>
               {store.products.map((product:any)=>{
                 return (
-                  <div key={product._id} >
-                    <p>{product.productname}</p>
-                  </div>
+                  <div key={product._id} onClick={(e)=>{e.preventDefault();ActivateProduct(product._id)}} >
+                    {activeProduct == product._id ? 
+                    <>
+                        <Product product={product} />
+                    </>
+                    :
+                    <>
+                        <MiniProduct product={product} />
+                    </>
+                    } 
+                    </div>
                 )
               })}
               </> 

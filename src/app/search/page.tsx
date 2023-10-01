@@ -3,11 +3,15 @@ import { useUser } from "@clerk/nextjs";
 import axios from "axios";
 import Link from "next/link";
 import { useState } from "react";
+import MiniProduct from '@/components/MiniProduct'
+import Product from '@/components/Product'
+
  
 export default function ProfilePage() {
   const { isLoaded, isSignedIn, user } = useUser();
   const [filter,setFilter] = useState({category:'',name:''});
   const [products,setProducts] = useState([])
+  const [activeProduct,setActiveProduct] = useState(null)
 
 const GetProductsBySearch = async()=>{
     try {
@@ -16,6 +20,14 @@ const GetProductsBySearch = async()=>{
         })
     } catch (error) {
         console.log(error)
+    }
+}
+
+const ActivateProduct = (id:any)=>{
+    if (activeProduct == id){
+        setActiveProduct(null)
+    }else{
+        setActiveProduct(id)
     }
 }
 
@@ -36,9 +48,16 @@ const GetProductsBySearch = async()=>{
         <>
             {products.map((product:any)=>{
                 return (
-                    <div key={product._id} >
-                        <p> {product.productname}</p>
-                        <p> {product.category}</p>
+                    <div key={product._id} onClick={(e)=>{e.preventDefault();ActivateProduct(product._id)}} >
+                    {activeProduct == product._id ? 
+                    <>
+                        <Product product={product} />
+                    </>
+                    :
+                    <>
+                        <MiniProduct product={product} />
+                    </>
+                    } 
                     </div>
                 )
             })}    
