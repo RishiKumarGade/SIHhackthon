@@ -4,7 +4,7 @@ import { SignUp } from '@clerk/nextjs/app-beta'
 export default function SigninPage() {
   return (
     <>
-    <SignUp/>
+    <SignUp unsafeMetadata={{registered:false}} />
     </>
   )
 }

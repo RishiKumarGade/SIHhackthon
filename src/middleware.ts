@@ -5,6 +5,6 @@ export default authMiddleware({
   publicRoutes:['/','signin','signup']
 });
 export const config = {
-      matcher: ['/((?!.+\\.[\\w]+$|_next).*)', '/', '/(api|trpc)(.*)','/dashboard'],
+      matcher: ['/((?!.+\\.[\\w]+$|_next).*)', '/', '/(api|trpc)(.*)','/dashboard','/profile/managestores',],
 };
  

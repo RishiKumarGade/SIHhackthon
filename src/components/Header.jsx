@@ -6,6 +6,7 @@ export default function Header() {
   const {userId} = auth();
   return ( 
   <>
+  -------------------------------HEADER----------------------------------
         <div>Clerk App</div>
         {!userId ?
           <>
@@ -21,6 +22,8 @@ export default function Header() {
         }
         <br />
         <UserButton afterSignOutUrl='/' />
+  -------------------------------HEADER----------------------------------
+<br />
   </> 
   )
 }
