@@ -4,7 +4,6 @@ const userSchema = new mongoose.Schema({
     ClerkuserId:{
         type:String,
         required:true,
-        unique:true,
     },
     contact:{
         type:String,
