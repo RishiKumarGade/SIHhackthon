@@ -7,7 +7,6 @@ export default function MiniProduct(product) {
   <>
     <p> {product.product.productname}</p>
     <p> {product.product.category}</p>
-    <button > Add To Cart </button>
   </> 
   )
 }

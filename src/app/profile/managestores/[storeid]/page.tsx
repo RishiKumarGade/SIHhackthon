@@ -3,7 +3,7 @@ import axios from "axios";
 import { Key, useEffect, useState } from "react";
 import { useRouter } from 'next/navigation'
 import MiniProduct from '@/components/MiniProduct'
-import Product from '@/components/Product'
+import {toast} from "react-hot-toast";
 
 export default function StorePage({ params }: { params: { storeid: Key } }) {
 
@@ -56,20 +56,20 @@ export default function StorePage({ params }: { params: { storeid: Key } }) {
     // ----------------------------------ADDING PRODUCT------------------------------------
   const AddProduct = async ()=>{
     try {
-      const imageUrl = UploadToCloudinary();
-      imageUrl.then((value:string)=>{
+      if(productdetails.name == '' || productdetails.price == 0 || selectedFile ==null || productdetails.category ==''){
+        return toast.error('check all requirements')
+      }else{
+        const imageUrl = UploadToCloudinary();
+        imageUrl.then((value:string)=>{
         productdetails.imageurl = value
-      }).then( async ()=>{
-        if (productdetails.name !='' || productdetails.price != 0 || productdetails.imageurl !='' || productdetails.storeid !=params.storeid || productdetails.category !=''){
-        const response = await axios.post('/api/addproduct',productdetails)
-        console.log('succesfuly added',response)
-        }
-        else{
-          console.log('check all requirements')
-        }
+        }).then( async ()=>{
+          const response = await axios.post('/api/addproduct',productdetails)
+          toast.success('succesfuly added')
       }).then(()=>{
-        location.reload()
+        GetStoreInfo();
+        setProductdetails({...productdetails,name:'',description:'',price:0,imageurl:'',category:''})
       })
+      }
     } catch (error:any) {
       console.log('adding failed',error.message)
     }
@@ -95,6 +95,17 @@ export default function StorePage({ params }: { params: { storeid: Key } }) {
       }
   }
 
+  const DeleteProduct = async(productId:any)=>{
+    try {
+        await axios.post('/api/deleteproduct',{productId}).then(()=>{
+          toast.success('succesfuly deleted product')
+          GetStoreInfo()
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}
+
     useEffect(()=>{
       GetStoreInfo()
     },[])
@@ -115,17 +126,11 @@ export default function StorePage({ params }: { params: { storeid: Key } }) {
               <>
               {store.products.map((product:any)=>{
                 return (
-                  <div key={product._id} onClick={(e)=>{e.preventDefault();ActivateProduct(product._id)}} >
-                    {activeProduct == product._id ? 
-                    <>
-                        <Product product={product} />
-                    </>
-                    :
-                    <>
+                  <div key={product._id} >
                         <MiniProduct product={product} />
-                    </>
-                    } 
-                    </div>
+                <button onClick={(e)=>DeleteProduct(product._id)}>Delete Product </button>
+
+                  </div>
                 )
               })}
               </> 

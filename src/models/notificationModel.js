@@ -1,21 +1,19 @@
 import mongoose from 'mongoose';
 
+
 const notificationSchema = new mongoose.Schema({
-    vendorId:{
-        type:mongoose.Schema.ObjectId,
-        ref:'users',
+    message:{
+        type:String,
         required:true,
     },
-    customerId:{
-        type:String,
-        required:[true,'please provide a username'],
+    userId:{
+        type:mongoose.Schema.ObjectId,
+        ref:'orders',
     },
-    cart:[
-            {
-                type:mongoose.Schema.ObjectId,
-                ref:'products',
-            }
-        ],
+    timestamp: {
+        type: Date,
+        default: Date.now()
+      },
 })
 
 const Notification = mongoose.models.notifications || mongoose.model('notifications',notificationSchema);

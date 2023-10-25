@@ -7,15 +7,19 @@ const cartSchema = new mongoose.Schema({
         required:true,
         unique:true,
     },
-    products:[
-        {
-            type:mongoose.Schema.ObjectId,
-            ref:'products',
+    item:[{
+        product:{
+                type:mongoose.Schema.ObjectId,
+                ref:'products',
+        },
+        quantity:{
+            type:Number,
+            default:1
         }
-    ],
+    }],
     totalPrice:{
         type:Number,
-        required:true
+        default:0,
     },
 })
 const Cart = mongoose.models.carts || mongoose.model('carts',cartSchema);

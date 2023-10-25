@@ -7,29 +7,42 @@ const orderSchema = new mongoose.Schema({
         required:true,
     },
     customerId:{
-        type:String,
+        type:mongoose.Schema.ObjectId,
+        ref:'users',
         required:[true,'please provide a username'],
     },
-    cart:{
+    product:{
         type:mongoose.Schema.ObjectId,
-        ref:'carts',
+        ref:'products',
+    },
+    totalPrice:{
+        type:Number,
+        required:true,
+    },
+    quantity:{
+        type:Number,
+        default:1
     },
     vendorLocationLatitude:{
         type:Number,
-        required:true
     },
     vendorLocationLongitude:{
         type:Number,
-        required:true
     },
     customerLocationLatitude:{
         type:Number,
-        required:true
     },
     customerLocationLongitude:{
         type:Number,
-        required:true
     },
+    transporterId:{
+        type:mongoose.Schema.ObjectId,
+        ref:'users',
+    },
+    isAccepted:{
+        type:Boolean,
+        default:false
+    }
 })
 
 const Order = mongoose.models.orders || mongoose.model('orders',orderSchema);

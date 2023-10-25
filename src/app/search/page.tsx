@@ -4,18 +4,17 @@ import axios from "axios";
 import Link from "next/link";
 import { useState } from "react";
 import MiniProduct from '@/components/MiniProduct'
-import Product from '@/components/Product'
 
  
 export default function ProfilePage() {
-  const { isLoaded, isSignedIn, user } = useUser();
-  const [filter,setFilter] = useState({category:'',name:''});
+  const [filter,setFilter] = useState('');
+  const [searchMethod,setSearchMethod] = useState('NAME')
   const [products,setProducts] = useState([])
   const [activeProduct,setActiveProduct] = useState(null)
 
 const GetProductsBySearch = async()=>{
     try {
-        await axios.post('/api/getproductsbysearch',filter).then((res)=>{
+        await axios.post('/api/getproductsbysearch',{filter,searchMethod}).then((res)=>{
             setProducts(res.data.data)
         })
     } catch (error) {
@@ -37,8 +36,16 @@ const ActivateProduct = (id:any)=>{
     <br />
     -----------QUERY--------------------
     <br />
-        <input placeholder="category" type="text" value={filter.category} onChange={(e)=>{setFilter({...filter,category:e.target.value});GetProductsBySearch()}} />
-        <input placeholder="name" type="text" value={filter.name} onChange={(e)=>{setFilter({...filter,name:e.target.value});GetProductsBySearch()}} />
+    {
+    (searchMethod == 'CATEGORY') && 
+    <>
+    <input placeholder="category" type="text" value={filter} onChange={(e)=>{setFilter(e.target.value);GetProductsBySearch()}} />
+    </>
+    }
+    {(searchMethod == 'NAME') && <>
+    <input placeholder="name" type="text" value={filter} onChange={(e)=>{setFilter(e.target.value);GetProductsBySearch()}} />
+    </> 
+    }
     <br />
     -----------QUERY--------------------
     <br />
@@ -48,17 +55,9 @@ const ActivateProduct = (id:any)=>{
         <>
             {products.map((product:any)=>{
                 return (
-                    <div key={product._id} onClick={(e)=>{e.preventDefault();ActivateProduct(product._id)}} >
-                    {activeProduct == product._id ? 
-                    <>
-                        <Product product={product} />
-                    </>
-                    :
-                    <>
-                        <MiniProduct product={product} />
-                    </>
-                    } 
-                    </div>
+                    <Link key={product._id} href={`/checkout/${product._id}`}  >
+                    <MiniProduct product={product} />
+                    </Link>
                 )
             })}    
         </>
@@ -66,7 +65,6 @@ const ActivateProduct = (id:any)=>{
     <br />
     -----------PRODUCTVIEW--------------------
     <br />
-
     -------------------------------SEARCHPAGE---------------------------------
     </>
   )

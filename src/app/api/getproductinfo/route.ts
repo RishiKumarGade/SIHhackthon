@@ -10,19 +10,12 @@ connect()
 
 export async function POST(request:NextRequest){
     try {
-        const { userId }:any = getAuth(request);
         const reqBody = await request.json()
-        const {filter,searchMethod} = reqBody
-        let products;
-        if(searchMethod == 'CATEGORY'){
-            products = await Product.find({ category: { $regex: filter,$options: 'xi' }})
-        }
-        if(searchMethod == 'NAME'){
-            products = await Product.find({productname: { $regex: filter,$options: 'xi'}})
-        }
+        const {params} = reqBody
+        const product = await Product.findOne({_id:params.id})
         return NextResponse.json({
-            message:'fetched products',
-            data:products,
+            message:'fetched product',
+            data:product,
                 })
     }
     catch (error:any) {
